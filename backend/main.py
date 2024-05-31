@@ -5,9 +5,9 @@ from fastapi.responses import HTMLResponse
 import os
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.vectorstores import FAISS
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
 #taking the .env variables and using them for loading into the main file strict
 
 load_dotenv()
@@ -52,13 +52,17 @@ async def upload_pdf(file:UploadFile = File(...)):
     text_splitter = CharacterTextSplitter(
         separator="\n",
         chunk_size=1000,  #1000 charachters and so on
-        chunk_overlap=200,
+        chunk_overlap=100,
         length_function=len
     )
     chunks = text_splitter.split_text(text)
+    # print(chunks)
 
     # Creating embeddings out of those chunks
+
+
     embeddings = OpenAIEmbeddings()
+    
     knowledge_base = FAISS.from_texts(chunks,embeddings)
     
     return {"filename": file.filename, "message": "File uploaded successfully","extracted_text": text,"chunks":chunks}

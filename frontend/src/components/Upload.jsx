@@ -22,7 +22,7 @@ const Upload = () => {
         },
 
       });
-      setMessage(`File uploaded successfully: ${response.data.filename}`);
+      setMessage("File uploaded successfully");
       setcontentFile(response.data.extracted_text);
       console.log(contentFile);
       console.log(response.data.chunks);
@@ -39,7 +39,7 @@ const Upload = () => {
         <input type="file" onChange={handleFileChange} />
         <button type="submit">Upload</button>
       </form>
-      {message && <p>{message}</p>}
+      {message}
       
     </div>
   );
