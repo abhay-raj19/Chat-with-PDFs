@@ -1,13 +1,16 @@
-from fastapi import FastAPI, Request, UploadFile, File
+from fastapi import FastAPI, Request, UploadFile, File, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 import os
+from pydantic import BaseModel
 from dotenv import load_dotenv
 from PyPDF2 import PdfReader
 from langchain_text_splitters import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
+from langchain.chains.question_answering import load_qa_chain
+from langchain.llms import OpenAI
 #taking the .env variables and using them for loading into the main file strict
 
 load_dotenv()
@@ -30,7 +33,10 @@ app.mount("/assets", StaticFiles(directory="frontend/dist/assets"), name="assets
 async def read_root():
     with open("frontend/dist/index.html") as f:
         return f.read()
-    
+
+knowledge_base = None
+class QuestionRequest(BaseModel):
+    question: str    
 
 @app.post("/upload")
 async def upload_pdf(file:UploadFile = File(...)):
@@ -60,9 +66,24 @@ async def upload_pdf(file:UploadFile = File(...)):
 
     # Creating embeddings out of those chunks
 
-
-    embeddings = OpenAIEmbeddings()
     
+    embeddings = OpenAIEmbeddings()
+    global knowledge_base
     knowledge_base = FAISS.from_texts(chunks,embeddings)
     
     return {"filename": file.filename, "message": "File uploaded successfully","extracted_text": text,"chunks":chunks}
+
+#for asking up the question with that specific PDF
+
+@app.post("/ask")
+async def ask_question(request: QuestionRequest):
+    if knowledge_base is None:
+        raise HTTPException(status_code=400, detail="No knowledge base available")
+    if(request.question):
+        query = request.question
+        docs = knowledge_base.similarity_search(query)
+        llm = OpenAI()
+        chain = load_qa_chain(llm,chain_type="stuff")
+        res = chain.run(input_documents=docs,question=query)    
+
+    return {"answer":res}
