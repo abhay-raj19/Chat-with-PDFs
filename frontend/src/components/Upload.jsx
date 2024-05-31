@@ -3,6 +3,8 @@ import axios from 'axios';
 
 const Upload = () => {
   const [file, setFile] = useState(null);
+  const [message,setMessage] = useState("");
+  const [contentFile, setcontentFile] = useState("");
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -18,10 +20,13 @@ const Upload = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+
       });
-      console.log(response.data);
+      setMessage(`File uploaded successfully: ${response.data.filename}`);
+      setcontentFile(response.data.extracted_text);
     } catch (error) {
       console.error('Error uploading file:', error);
+      setMessage('Error uploading file');
     }
   };
 
@@ -32,6 +37,9 @@ const Upload = () => {
         <input type="file" onChange={handleFileChange} />
         <button type="submit">Upload</button>
       </form>
+      {message && <p>{message}</p>}
+      <p>Content of the file is : </p>
+      {contentFile}
     </div>
   );
 };
