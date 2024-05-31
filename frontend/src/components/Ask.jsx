@@ -15,7 +15,7 @@ const Ask = () => {
       const response = await axios.post('http://localhost:8000/ask', {
         question: question
       });
-      console.log(response.data.answer);
+      // console.log(response.data.answer);
       setAnswer(response.data.answer);
     } catch (error) {
       console.error('Error asking question:', error);
@@ -27,6 +27,7 @@ const Ask = () => {
       <h1>Ask a Question</h1>
       <form onSubmit={handleSubmit}>
         <input type="text" value={question} placeholder="Enter your question" onChange={handleQuestionChange} />
+        
         <button type="submit">Ask</button>
       </form>
       <p>Answer: {answer}</p>

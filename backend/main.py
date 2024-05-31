@@ -11,6 +11,7 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
 from langchain.llms import OpenAI
+from langchain.callbacks import get_openai_callback
 #taking the .env variables and using them for loading into the main file strict
 
 load_dotenv()
@@ -84,6 +85,8 @@ async def ask_question(request: QuestionRequest):
         docs = knowledge_base.similarity_search(query)
         llm = OpenAI()
         chain = load_qa_chain(llm,chain_type="stuff")
-        res = chain.run(input_documents=docs,question=query)    
+        with get_openai_callback() as cb:
+            res = chain.run(input_documents=docs,question=query)   
+            print(cb) 
 
     return {"answer":res}

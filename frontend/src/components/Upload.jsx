@@ -25,7 +25,7 @@ const Upload = () => {
       setMessage("File uploaded successfully");
       setcontentFile(response.data.extracted_text);
       console.log(contentFile);
-      console.log(response.data.chunks);
+      // console.log(response.data.chunks);
     } catch (error) {
       console.error('Error uploading file:', error);
       setMessage('Error uploading file');
