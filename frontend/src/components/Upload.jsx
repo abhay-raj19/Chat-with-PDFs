@@ -24,6 +24,8 @@ const Upload = () => {
       });
       setMessage(`File uploaded successfully: ${response.data.filename}`);
       setcontentFile(response.data.extracted_text);
+      console.log(contentFile);
+      console.log(response.data.chunks);
     } catch (error) {
       console.error('Error uploading file:', error);
       setMessage('Error uploading file');
@@ -38,8 +40,7 @@ const Upload = () => {
         <button type="submit">Upload</button>
       </form>
       {message && <p>{message}</p>}
-      <p>Content of the file is : </p>
-      {contentFile}
+      
     </div>
   );
 };
