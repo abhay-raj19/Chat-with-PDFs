@@ -1,3 +1,8 @@
+<img width="790" alt="image" src="https://github.com/abhay-raj19/Ai-Planet-assignment/assets/96302417/0ae74bd8-b3a5-4511-bfab-6607aab5dd96">
+
+
+
+
 # PDFChat Interface Application
 
 This project is a simple PDFchat interface application built using FastAPI and React. It allows users to upload up a pdf file and then ask questions, and the system provides answers in a chat-like manner.
